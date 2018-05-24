@@ -10,7 +10,6 @@ class Deck extends Component {
     super(props);
 
     const position = new Animated.ValueXY();
-
     const panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderMove: (event, gesture) => {
@@ -18,21 +17,23 @@ class Deck extends Component {
       },
       onPanResponderRelease: (event, gesture) => {
         if (gesture.dx > SWIPE_THRESHOLD) {
-          this.forceSwipeRight();
+          this.forceSwipe('right');
         } else if (gesture.dx < -SWIPE_THRESHOLD) {
-          console.log('swipe left!!!');
+          this.forceSwipe('left');
         } else {
           this.resetPosition();
         }
       }
     });
 
-    this.state = { panResponder, position };
+    this.state = { panResponder, position, index: 0 };
   }
 
-  forceSwipeRight() {
+  forceSwipe(direction) {
+    const x = direction === 'right' ? SCREEN_WIDTH : -SCREEN_WIDTH;
+
     Animated.timing(this.state.position, {
-      toValue: { x: SCREEN_WIDTH, y: 0 },
+      toValue: { x, y: 0 },
       duration: SWIPE_OUT_DURATION
     }).start();
   }
